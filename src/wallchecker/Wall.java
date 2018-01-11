@@ -1,8 +1,6 @@
 package wallchecker;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
 
 public class Wall {
 
@@ -52,68 +50,63 @@ public class Wall {
     public int getNeededBricksCount() {
         return neededBricksCount;
     }
-
-    public ArrayList<Brick> getUsefulBricks(ArrayList<Brick> bricks) {
-
-        ArrayList<Brick> usefulBricks = new ArrayList<>();
-        int need = this.neededBricksCount;
-        int current = 0;
-        int excess_scores = 0;
-
-        for (Brick brick : bricks) {
-            if (current < need) {
-                current += brick.getScores();
-                usefulBricks.add(brick);
-            }
-        }
-
-        usefulBricks.sort(new Comparator<Brick>() {
-            @Override
-            public int compare(Brick brick, Brick t1) {
-                return (t1.getHeight() + t1.getWidth()) - (brick.getWidth() + brick.getHeight());
-            }
-        });
-
-        excess_scores = current - need;
-
-        if (excess_scores > 0) {
-            Iterator iterator = usefulBricks.listIterator();
-
-            while (iterator.hasNext()) {
-                Brick useful_brick = (Brick) iterator.next();
-                if (useful_brick.getScores() <= excess_scores) {
-                    excess_scores -= useful_brick.getScores();
-                    iterator.remove();
-                }
-            }
-        }
-
-        return usefulBricks;
+    
+    public ArrayList<Placeholder> getAllPlaceholdersForBrick(Brick brick) {
+    	ArrayList<Placeholder> placeholders = getPlaceholdersForBrick(brick);
+    	
+    	if (brick.getWidth() == brick.getHeight())
+    		return placeholders;
+    	
+    	int height = brick.getHeight();
+    	brick.setHeight(brick.getWidth());
+    	brick.setWidth(height);
+    	placeholders.addAll(getPlaceholdersForBrick(brick));
+    	return placeholders;
     }
 
-    public boolean getSquareForSize(int width, int height) {
-
+    private ArrayList<Placeholder> getPlaceholdersForBrick(Brick brick) {
+    	
+    	int width = brick.getWidth();
+    	int height = brick.getHeight();
         int current_width = 0;
+        ArrayList<Placeholder> placeholders = new ArrayList<>();
+        int current_placeholders_capacity = -1;
+        System.out.println("ASDA");
 
-        for (int row = 0; row < this.height; row++) {
-            current_width = 0;
-            for (int col = 0; col < this.width; col++) {
-                if (matrix[row][col] == 1) {
-                    current_width++;
-                    if (current_width == width) {
-//                        System.out.println(row + " " + (col - width + 1) +" "+width+" "+height);
-                        if (checkHeight(row, col - width + 1, width, height)) {
-                            //Probably will be changed:
-                            bindBrickToPlace(row, col - width + 1, width, height);
-                            return true;
-                        }
-                    }
-                } else {
-                    current_width = 0;
-                }
-            }
+        while (current_placeholders_capacity != placeholders.size()) {
+        	current_placeholders_capacity = placeholders.size();
+	        for (int row = 0; row < this.height; row++) {
+	            current_width = 0;
+	            for (int col = 0; col < this.width; col++) {
+	            	if (checkPlaceholder(col, row, placeholders)) {
+	            		//current_placeholders_capacity = placeholders.size();
+	            		//System.out.println("CONTINUE x:" + col + " y:" + row);
+	            		current_width = 0;
+	            		continue;
+	            	}
+	                if (matrix[row][col] == 1) {
+	                    current_width++;
+	                    if (current_width == width) {
+	                        if (checkHeight(row, col - width + 1, width, height)) {
+	                        	//System.out.println("ACCEPT x:" + col + " y:" + row);
+	                        	placeholders.add(new Placeholder(width, height, col - width + 1, row));
+	                        }
+	                    }
+	                } else {
+	                    current_width = 0;
+	                }
+	            }
+	        }
         }
-        return false;
+        return placeholders;
+    }
+    
+    private boolean checkPlaceholder(int x, int y, ArrayList<Placeholder> placeholders) {
+    	for (Placeholder placeholder : placeholders) {
+    		if ((placeholder.getPosX() == x) && (placeholder.getPosY() == y))
+    			return true;
+    	}
+    	return false;
     }
 
     private boolean checkHeight(int row, int col, int width, int height) {
@@ -131,10 +124,14 @@ public class Wall {
         return true;
     }
 
-    private void bindBrickToPlace(int row, int col, int width, int height) {
-        for (int r = row; r < row + height; r++) {
-            for (int c = col; c < col + width; c++) {
-//                System.out.println("R & C:" + r +" " + c);
+    public void insert(Square square) {
+    	int x = square.getPosX();
+    	int y = square.getPosY();
+    	int width = square.getWidth();
+    	int height = square.getHeight();
+    	
+        for (int r = y; r < y + height; r++) {
+            for (int c = x; c < x + width; x++) {
                 matrix[r][c] = 2;
             }
         }
@@ -160,7 +157,7 @@ public class Wall {
         return true;
     }
 
-    public void retriveMatrix() {
+    public void retrieveMatrix() {
         for (int row = 0; row < this.height; row++) {
             for (int col = 0; col < this.width; col++) {
                 if (matrix[row][col] == 2)

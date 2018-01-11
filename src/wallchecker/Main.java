@@ -9,10 +9,8 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-
-        Main main = new Main();
+    	
         Scanner scanner = null;
-
         try {
             scanner = new Scanner(new FileReader(args[0]));
         } catch (FileNotFoundException e) {
@@ -32,8 +30,8 @@ public class Main {
             }
         }
         wall.setMatrix(matrix);
-        wall.printMatrix();
-        ArrayList<Brick> bricks = new ArrayList();
+        //wall.printMatrix();
+        ArrayList<Brick> bricks = new ArrayList<Brick>();
 
         int kind_od_bricks = Integer.valueOf(scanner.nextLine());
 
@@ -47,29 +45,25 @@ public class Main {
         bricks.sort(new Comparator<Brick>() {
             @Override
             public int compare(Brick brick, Brick t1) {
-                return (brick.getWidth() + brick.getHeight()) - (t1.getHeight() + t1.getWidth());
+                return brick.getSquare() - t1.getSquare();
             }
         });
+        
+        for (Brick brick : bricks) {
+        	System.out.println(brick.getSquare());
+        }
+        
+        ArrayList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(bricks.get(2));
+        
+        for (Placeholder placeholder : placeholders) {
+        	System.out.println("x:" + placeholder.getPosX() + " y:" + placeholder.getPosY() + " width:" + placeholder.getWidth() + " height:" + placeholder.getHeight());
+        }
+        System.out.println(placeholders.size());
 
         wall.calculateNeededBricksCount();
-        bricks = wall.getUsefulBricks(bricks);
-        main.createWall(wall, bricks);
     }
 
     public void createWall(Wall wall, ArrayList<Brick> bricks) {
-        wall.printMatrix();
-        System.out.println(" ");
-        for (Brick brick : bricks) {
-            if (!wall.getSquareForSize(brick.getWidth(), brick.getHeight()))
-                wall.getSquareForSize(brick.getHeight(), brick.getWidth());
-            wall.printMatrix();
-            System.out.println(" ");
-        }
-        if (wall.isMatrixEmpty()) {
-            System.out.println("yes");
-        } else {
-            System.out.println("no");
-            wall.retriveMatrix();
-        }
+       
     }
 }
