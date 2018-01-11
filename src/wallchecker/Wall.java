@@ -71,7 +71,6 @@ public class Wall {
         int current_width = 0;
         ArrayList<Placeholder> placeholders = new ArrayList<>();
         int current_placeholders_capacity = -1;
-        System.out.println("ASDA");
 
         while (current_placeholders_capacity != placeholders.size()) {
         	current_placeholders_capacity = placeholders.size();
@@ -79,8 +78,6 @@ public class Wall {
 	            current_width = 0;
 	            for (int col = 0; col < this.width; col++) {
 	            	if (checkPlaceholder(col, row, placeholders)) {
-	            		//current_placeholders_capacity = placeholders.size();
-	            		//System.out.println("CONTINUE x:" + col + " y:" + row);
 	            		current_width = 0;
 	            		continue;
 	            	}
@@ -88,7 +85,6 @@ public class Wall {
 	                    current_width++;
 	                    if (current_width == width) {
 	                        if (checkHeight(row, col - width + 1, width, height)) {
-	                        	//System.out.println("ACCEPT x:" + col + " y:" + row);
 	                        	placeholders.add(new Placeholder(width, height, col - width + 1, row));
 	                        }
 	                    }
@@ -131,7 +127,7 @@ public class Wall {
     	int height = square.getHeight();
     	
         for (int r = y; r < y + height; r++) {
-            for (int c = x; c < x + width; x++) {
+            for (int c = x; c < x + width; c++) {
                 matrix[r][c] = 2;
             }
         }

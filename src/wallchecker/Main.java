@@ -30,13 +30,14 @@ public class Main {
             }
         }
         wall.setMatrix(matrix);
-        //wall.printMatrix();
         ArrayList<Brick> bricks = new ArrayList<Brick>();
+        ArrayList<Brick> types = new ArrayList<>();
 
         int kind_od_bricks = Integer.valueOf(scanner.nextLine());
 
         for (int i = 0; i < kind_od_bricks; i++) {
             String[] brick_line = scanner.nextLine().split(" ");
+            types.add(new Brick(Integer.valueOf(brick_line[0]), Integer.valueOf(brick_line[1])));
             for (int j = 0; j < Integer.valueOf(brick_line[2]); j++) {
                 bricks.add(new Brick(Integer.valueOf(brick_line[0]), Integer.valueOf(brick_line[1])));
             }
@@ -45,15 +46,23 @@ public class Main {
         bricks.sort(new Comparator<Brick>() {
             @Override
             public int compare(Brick brick, Brick t1) {
-                return brick.getSquare() - t1.getSquare();
+                return t1.getSquare() - brick.getSquare();
             }
         });
         
+        ArrayList<Placeholder> placeholders;
+        
         for (Brick brick : bricks) {
-        	System.out.println(brick.getSquare());
+        	placeholders = wall.getAllPlaceholdersForBrick(brick);
+        	
+        	if (placeholders.size() > 0)
+        		wall.insert(placeholders.get(0));
+        	
+        	System.out.println(placeholders.size());
+        	wall.printMatrix();
         }
         
-        ArrayList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(bricks.get(2));
+        placeholders = wall.getAllPlaceholdersForBrick(bricks.get(bricks.size() - 2));
         
         for (Placeholder placeholder : placeholders) {
         	System.out.println("x:" + placeholder.getPosX() + " y:" + placeholder.getPosY() + " width:" + placeholder.getWidth() + " height:" + placeholder.getHeight());
