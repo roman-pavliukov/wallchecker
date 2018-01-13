@@ -1,6 +1,6 @@
 package wallchecker;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Wall {
 
@@ -51,8 +51,8 @@ public class Wall {
         return neededBricksCount;
     }
     
-    public ArrayList<Placeholder> getAllPlaceholdersForBrick(Brick brick) {
-    	ArrayList<Placeholder> placeholders = getPlaceholdersForBrick(brick);
+    public LinkedList<Placeholder> getAllPlaceholdersForBrick(Brick brick) {
+    	LinkedList<Placeholder> placeholders = getPlaceholdersForBrick(brick);
     	
     	if (brick.getWidth() == brick.getHeight())
     		return placeholders;
@@ -64,12 +64,12 @@ public class Wall {
     	return placeholders;
     }
 
-    private ArrayList<Placeholder> getPlaceholdersForBrick(Brick brick) {
+    private LinkedList<Placeholder> getPlaceholdersForBrick(Brick brick) {
     	
     	int width = brick.getWidth();
     	int height = brick.getHeight();
         int current_width = 0;
-        ArrayList<Placeholder> placeholders = new ArrayList<>();
+        LinkedList<Placeholder> placeholders = new LinkedList<>();
         int current_placeholders_capacity = -1;
 
         while (current_placeholders_capacity != placeholders.size()) {
@@ -97,7 +97,7 @@ public class Wall {
         return placeholders;
     }
     
-    private boolean checkPlaceholder(int x, int y, ArrayList<Placeholder> placeholders) {
+    private boolean checkPlaceholder(int x, int y, LinkedList<Placeholder> placeholders) {
     	for (Placeholder placeholder : placeholders) {
     		if ((placeholder.getPosX() == x) && (placeholder.getPosY() == y))
     			return true;
@@ -129,6 +129,19 @@ public class Wall {
         for (int r = y; r < y + height; r++) {
             for (int c = x; c < x + width; c++) {
                 matrix[r][c] = 2;
+            }
+        }
+    }
+    
+    public void takeOut(Square square) {
+    	int x = square.getPosX();
+    	int y = square.getPosY();
+    	int width = square.getWidth();
+    	int height = square.getHeight();
+    	
+        for (int r = y; r < y + height; r++) {
+            for (int c = x; c < x + width; c++) {
+                matrix[r][c] = 1;
             }
         }
     }
