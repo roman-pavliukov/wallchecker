@@ -67,8 +67,9 @@ public class Main {
 				wall.insert(placeholder);
 				LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(brick);
 				if (newPlaceholders.isEmpty()) {
-					placeholders.removeFirst();
-					iterator.previous();
+					//placeholders.removeFirst();
+					//iterator.previous();
+					//wall.takeOut(placeholder);
 					findPlace(iterator, placeholders, wall);
 				}
 				if (!wall.isMatrixEmpty()) {
@@ -77,6 +78,9 @@ public class Main {
 					System.out.println("yes");
 					return;
 				}
+			} else {
+				placeholders = wall.getAllPlaceholdersForBrick((Brick) iterator.previous());
+				findPlace(iterator, placeholders, wall);
 			}
 		}
 	}
