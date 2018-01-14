@@ -52,62 +52,35 @@ public class Main {
 		Main main = new Main();
 		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(iterator.next());
 		main.findPlace(iterator, placeholders, wall);
-		
-		LinkedList<Placeholder> test = wall.getAllPlaceholdersForBrick(new Brick(2, 1));
-		wall.printMatrix();
-		System.out.println(test.size());
+		System.out.println("no");
 		wall.printMatrix();
 	}
-	
+
 	private void findPlace(ListIterator<Brick> iterator, LinkedList<Placeholder> placeholders, Wall wall) {
 
 		for (Placeholder placeholder : placeholders) {
-			if (iterator.hasNext()) {
-				Brick brick = (Brick) iterator.next();
-				wall.insert(placeholder);
-				LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(brick);
-				if (newPlaceholders.isEmpty()) {
-					//placeholders.removeFirst();
-					//iterator.previous();
-					//wall.takeOut(placeholder);
-					findPlace(iterator, placeholders, wall);
-				}
-				if (!wall.isMatrixEmpty()) {
+			wall.insert(placeholder);
+			System.out.println(placeholder.getSquare());
+			if (!wall.isMatrixEmpty()) {
+				if (iterator.hasNext()) {
+					Brick brick = (Brick) iterator.next();
+					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(brick);
+					if (newPlaceholders.isEmpty()) {
+						findPlace(iterator, placeholders, wall);
+					}
 					findPlace(iterator, newPlaceholders, wall);
 				} else {
-					System.out.println("yes");
-					return;
+					wall.takeOut(placeholder);
+					System.err.println(placeholder.getSquare());
+					placeholders = wall.getAllPlaceholdersForBrick((Brick) iterator.previous());
+					placeholders.removeFirst();
+					findPlace(iterator, placeholders, wall);
 				}
 			} else {
-				placeholders = wall.getAllPlaceholdersForBrick((Brick) iterator.previous());
-				findPlace(iterator, placeholders, wall);
+				System.out.println("yes");
+				wall.printMatrix();
+				System.exit(0);
 			}
 		}
-	}
-
-//	private void findPlace(ListIterator<Brick> iterator, Wall wall, int i) {
-//
-//		ArrayList<Placeholder> placeholders = null;
-//		if (iterator.hasNext()) {
-//			placeholders = wall.getAllPlaceholdersForBrick((Brick) iterator.next());
-//			if (placeholders.isEmpty()) {
-//				findPlace(iterator, wall, i);
-//			} else {
-//				wall.insert(placeholders.get(i));
-//				findPlace(iterator, wall, i);
-//			}
-//		} else {
-//			if (!wall.isMatrixEmpty()) {
-//				iterator.previous();
-//				findPlace(iterator, wall, ++i);
-//			} else {
-//				System.out.println("yes");
-//				return;
-//			}
-//		}
-//	}
-
-	public void createWall(Wall wall, ArrayList<Brick> bricks) {
-
 	}
 }
