@@ -128,7 +128,7 @@ public class Wall {
     	
         for (int r = y; r < y + height; r++) {
             for (int c = x; c < x + width; c++) {
-                matrix[r][c] = 2;
+                matrix[r][c] = square.getSquare()+1;
             }
         }
     }

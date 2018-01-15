@@ -52,21 +52,33 @@ public class Main {
 		Main main = new Main();
 		Brick brick = bricks.removeFirst();
 		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
-		main.findPlace(bricks, placeholders, wall);
+		main.findPlace(bricks, placeholders, wall, brick);
 		System.out.println("no");
 		wall.printMatrix();
 	}
 
-	private void findPlace(LinkedList<Brick> bricks, LinkedList<Placeholder> placeholders, Wall wall) {
+	private void findPlace(LinkedList<Brick> bricks, LinkedList<Placeholder> placeholders, Wall wall, Brick lastBrick) {
 
 		for (Placeholder placeholder : placeholders) {
+			boolean takedOut = false;
 			wall.insert(placeholder);
+			wall.printMatrix();
+			System.out.println("------");
 			if (!wall.isMatrixEmpty()) {
 				if (!bricks.isEmpty()) {
 					Brick nextBrick = bricks.removeFirst();
 					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(nextBrick);
-					findPlace(bricks, newPlaceholders, wall);
+					if (newPlaceholders.isEmpty()) {
+						wall.takeOut(placeholder);
+						bricks.addFirst(lastBrick);
+						takedOut = true;
+						continue;
+					}
+					findPlace(bricks, newPlaceholders, wall, lastBrick);
 				} else {
+					wall.takeOut(placeholder);
+					takedOut = true;
+					bricks.addFirst(lastBrick);
 					return;
 				}
 			} else {
@@ -74,6 +86,8 @@ public class Main {
 				wall.printMatrix();
 				System.exit(0);
 			}
+			if (!takedOut)
+				wall.takeOut(placeholder);
 		}
 	}
 }
