@@ -2,13 +2,9 @@ package wallchecker;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.Scanner;
-
-import javax.print.attribute.ResolutionSyntax;
 
 public class Main {
 
@@ -50,6 +46,7 @@ public class Main {
 			}
 		});
 		Main main = new Main();
+		System.out.println(bricks.size());
 		Brick brick = bricks.removeFirst();
 		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
 		main.findPlace(bricks, placeholders, wall, brick);
@@ -58,36 +55,43 @@ public class Main {
 	}
 
 	private void findPlace(LinkedList<Brick> bricks, LinkedList<Placeholder> placeholders, Wall wall, Brick lastBrick) {
-
-		for (Placeholder placeholder : placeholders) {
+		while (!placeholders.isEmpty()) {
+			Placeholder placeholder = placeholders.removeFirst();
 			boolean takedOut = false;
 			wall.insert(placeholder);
 			wall.printMatrix();
-			System.out.println("------");
+			System.out.println("======");
 			if (!wall.isMatrixEmpty()) {
 				if (!bricks.isEmpty()) {
 					Brick nextBrick = bricks.removeFirst();
 					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(nextBrick);
+					System.out.println("SQUARE:" + nextBrick.getSquare());
+					//System.out.println(bricks.getFirst().getSquare());
 					if (newPlaceholders.isEmpty()) {
 						wall.takeOut(placeholder);
-						bricks.addFirst(lastBrick);
+						bricks.addFirst(nextBrick);
 						takedOut = true;
-						continue;
+						findPlace(bricks, placeholders, wall, nextBrick);
+					} else {
+						bricks.addFirst(nextBrick);
+						findPlace(bricks, newPlaceholders, wall, nextBrick);
 					}
-					findPlace(bricks, newPlaceholders, wall, lastBrick);
 				} else {
 					wall.takeOut(placeholder);
 					takedOut = true;
 					bricks.addFirst(lastBrick);
-					return;
+//					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(lastBrick);
+//					if (newPlaceholders.size()>1)
+//						findPlace(bricks, new LinkedList<>(newPlaceholders.subList(0, newPlaceholders.size() - 2)), wall, lastBrick);
 				}
 			} else {
 				System.out.println("yes");
 				wall.printMatrix();
 				System.exit(0);
 			}
-			if (!takedOut)
+			if (!takedOut) {
 				wall.takeOut(placeholder);
+			}
 		}
 	}
 }
