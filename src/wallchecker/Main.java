@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Scanner;
 
+import javax.print.attribute.ResolutionSyntax;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -32,7 +34,7 @@ public class Main {
 			}
 		}
 		wall.setMatrix(matrix);
-		ArrayList<Brick> bricks = new ArrayList<Brick>();
+		LinkedList<Brick> bricks = new LinkedList<Brick>();
 		int kind_od_bricks = Integer.valueOf(scanner.nextLine());
 
 		for (int i = 0; i < kind_od_bricks; i++) {
@@ -47,34 +49,25 @@ public class Main {
 				return t1.getSquare() - brick.getSquare();
 			}
 		});
-
-		ListIterator<Brick> iterator = bricks.listIterator();
 		Main main = new Main();
-		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(iterator.next());
-		main.findPlace(iterator, placeholders, wall);
+		Brick brick = bricks.removeFirst();
+		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
+		main.findPlace(bricks, placeholders, wall);
 		System.out.println("no");
 		wall.printMatrix();
 	}
 
-	private void findPlace(ListIterator<Brick> iterator, LinkedList<Placeholder> placeholders, Wall wall) {
+	private void findPlace(LinkedList<Brick> bricks, LinkedList<Placeholder> placeholders, Wall wall) {
 
 		for (Placeholder placeholder : placeholders) {
 			wall.insert(placeholder);
-			System.out.println(placeholder.getSquare());
 			if (!wall.isMatrixEmpty()) {
-				if (iterator.hasNext()) {
-					Brick brick = (Brick) iterator.next();
-					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(brick);
-					if (newPlaceholders.isEmpty()) {
-						findPlace(iterator, placeholders, wall);
-					}
-					findPlace(iterator, newPlaceholders, wall);
+				if (!bricks.isEmpty()) {
+					Brick nextBrick = bricks.removeFirst();
+					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(nextBrick);
+					findPlace(bricks, newPlaceholders, wall);
 				} else {
-					wall.takeOut(placeholder);
-					System.err.println(placeholder.getSquare());
-					placeholders = wall.getAllPlaceholdersForBrick((Brick) iterator.previous());
-					placeholders.removeFirst();
-					findPlace(iterator, placeholders, wall);
+					return;
 				}
 			} else {
 				System.out.println("yes");
