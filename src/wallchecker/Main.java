@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import javax.management.BadBinaryOpValueExpException;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -46,52 +48,42 @@ public class Main {
 			}
 		});
 		Main main = new Main();
-		System.out.println(bricks.size());
-		Brick brick = bricks.removeFirst();
-		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
-		main.findPlace(bricks, placeholders, wall, brick);
+//		Brick brick = bricks.removeFirst();
+		//LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
+		main.findPlace(bricks, wall);
 		System.out.println("no");
 		wall.printMatrix();
 	}
 
-	private void findPlace(LinkedList<Brick> bricks, LinkedList<Placeholder> placeholders, Wall wall, Brick lastBrick) {
-		while (!placeholders.isEmpty()) {
-			Placeholder placeholder = placeholders.removeFirst();
-			boolean takedOut = false;
-			wall.insert(placeholder);
-			wall.printMatrix();
-			System.out.println("======");
-			if (!wall.isMatrixEmpty()) {
-				if (!bricks.isEmpty()) {
-					Brick nextBrick = bricks.removeFirst();
-					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(nextBrick);
-					System.out.println("SQUARE:" + nextBrick.getSquare());
-					//System.out.println(bricks.getFirst().getSquare());
-					if (newPlaceholders.isEmpty()) {
-						wall.takeOut(placeholder);
-						bricks.addFirst(nextBrick);
-						takedOut = true;
-						findPlace(bricks, placeholders, wall, nextBrick);
-					} else {
-						bricks.addFirst(nextBrick);
-						findPlace(bricks, newPlaceholders, wall, nextBrick);
-					}
-				} else {
-					wall.takeOut(placeholder);
-					takedOut = true;
-					bricks.addFirst(lastBrick);
-//					LinkedList<Placeholder> newPlaceholders = wall.getAllPlaceholdersForBrick(lastBrick);
-//					if (newPlaceholders.size()>1)
-//						findPlace(bricks, new LinkedList<>(newPlaceholders.subList(0, newPlaceholders.size() - 2)), wall, lastBrick);
-				}
-			} else {
-				System.out.println("yes");
-				wall.printMatrix();
-				System.exit(0);
-			}
-			if (!takedOut) {
-				wall.takeOut(placeholder);
-			}
+	private void findPlace(LinkedList<Brick> bricks, Wall wall) {
+		if (bricks.isEmpty()) {
+			return;
 		}
+		Brick brick = bricks.getFirst();
+		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
+		System.out.println("placeholders: " + placeholders.size());
+		wall.printMatrix();
+		System.out.println("====");
+		for (Placeholder placeholder : placeholders) {
+			wall.insert(placeholder);
+			bricks.removeFirst();
+			if (wall.isMatrixEmpty()) {
+				wall.printMatrix();
+				System.out.println("success");
+				System.exit(0);
+			} else {
+				findPlace(bricks, wall);
+			}
+			wall.takeOut(placeholder);
+			bricks.addFirst(brick);
+			//System.out.println(placeholder.getSquare() + "         " + brick.getSquare());
+		}
+	}
+	
+	private void someFunc(int i) {
+		System.out.println(i);
+		if (i == 0)
+			return;
+		someFunc(--i);
 	}
 }
