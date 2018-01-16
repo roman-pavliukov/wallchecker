@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import javax.management.BadBinaryOpValueExpException;
-
 public class Main {
 
 	public static void main(String[] args) {
@@ -47,9 +45,8 @@ public class Main {
 				return t1.getSquare() - brick.getSquare();
 			}
 		});
+		
 		Main main = new Main();
-//		Brick brick = bricks.removeFirst();
-		//LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
 		main.findPlace(bricks, wall);
 		System.out.println("no");
 		wall.printMatrix();
@@ -61,9 +58,7 @@ public class Main {
 		}
 		Brick brick = bricks.getFirst();
 		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
-		System.out.println("placeholders: " + placeholders.size());
 		wall.printMatrix();
-		System.out.println("====");
 		for (Placeholder placeholder : placeholders) {
 			wall.insert(placeholder);
 			bricks.removeFirst();
@@ -76,14 +71,6 @@ public class Main {
 			}
 			wall.takeOut(placeholder);
 			bricks.addFirst(brick);
-			//System.out.println(placeholder.getSquare() + "         " + brick.getSquare());
 		}
-	}
-	
-	private void someFunc(int i) {
-		System.out.println(i);
-		if (i == 0)
-			return;
-		someFunc(--i);
 	}
 }

@@ -154,6 +154,7 @@ public class Wall {
             }
             System.out.println(row_matrix);
         }
+        System.out.println("------------------------------");
     }
 
     public boolean isMatrixEmpty() {
