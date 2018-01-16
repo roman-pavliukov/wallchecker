@@ -152,9 +152,9 @@ public class Wall {
             for (int col = 0; col < this.width; col++) {
                 row_matrix += matrix[row][col];
             }
-            System.out.println(row_matrix);
+            System.err.println(row_matrix);
         }
-        System.out.println("------------------------------");
+        System.err.println("------------------------------");
     }
 
     public boolean isMatrixEmpty() {

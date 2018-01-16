@@ -49,7 +49,6 @@ public class Main {
 		Main main = new Main();
 		main.findPlace(bricks, wall);
 		System.out.println("no");
-		wall.printMatrix();
 	}
 
 	private void findPlace(LinkedList<Brick> bricks, Wall wall) {
@@ -58,13 +57,12 @@ public class Main {
 		}
 		Brick brick = bricks.getFirst();
 		LinkedList<Placeholder> placeholders = wall.getAllPlaceholdersForBrick(brick);
-		wall.printMatrix();
 		for (Placeholder placeholder : placeholders) {
 			wall.insert(placeholder);
 			bricks.removeFirst();
 			if (wall.isMatrixEmpty()) {
 				wall.printMatrix();
-				System.out.println("success");
+				System.out.println("yes");
 				System.exit(0);
 			} else {
 				findPlace(bricks, wall);
